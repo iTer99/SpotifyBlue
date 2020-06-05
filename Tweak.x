@@ -37,6 +37,8 @@ BOOL runBefore = NO;
 BOOL isEnabled;
 BOOL spotifyEnabled;
 BOOL appleEnabled;
+BOOL nhaccuatuiEnabled;
+BOOL zingEnabled;
 
 // this hooks into the class BluetoothDevice from the BluetoothManager framework
 %hook BluetoothDevice
@@ -78,6 +80,32 @@ BOOL appleEnabled;
         return isDeviceConnected;
 
       }
+
+        if(nhaccuatuiEnabled) {
+
+        //opens nhaccuatui
+        [[UIApplication sharedApplication] launchApplicationWithIdentifier:@"com.nct.nhaccuatui" suspended:FALSE];
+
+        // say that we have run our modified code and too not open nhaccuatui again until runBefore is False
+        runBefore = YES;
+
+        // returns the value back to the method
+        return isDeviceConnected;
+
+      }
+
+        if(zingEnabled) {
+
+        //opens zing mp3
+        [[UIApplication sharedApplication] launchApplicationWithIdentifier:@"vng.com.vn.zingmp3-lite" suspended:FALSE];
+
+        // say that we have run our modified code and too not open zing mp3 again until runBefore is False
+        runBefore = YES;
+
+        // returns the value back to the method
+        return isDeviceConnected;
+
+      }
     }
   }
 
@@ -109,7 +137,7 @@ BOOL appleEnabled;
 // this section of code gets the values from our PreferenceBundle to check if the tweak is enabled and other settings.
 %ctor {
   //create HBPreferences instance
-  HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"tech.kodeycodesstuff.spotifyblueprefs"];
+  HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.iter99.spotifyblueprefs"];
 
 
   //registers preference variables, naming the preference key and variable the same thing reduces confusion for me.
@@ -117,10 +145,16 @@ BOOL appleEnabled;
   // checks if our tweak is enabled and assigns our variable 'isEnabled' to the value of that.
   [preferences registerBool:&isEnabled default:YES forKey:@"isEnabled"];
 
-  // checks to see if the user wants to open spotify instead of apple music
+  // checks to see if the user wants to open spotify
   [preferences registerBool:&spotifyEnabled default:YES forKey:@"spotifyEnabled"];
 
-  // checks to see if the user wants to open apple music instead of spotify
+  // checks to see if the user wants to open apple music
   [preferences registerBool:&appleEnabled default:YES forKey:@"appleEnabled"];
+
+  // checks to see if the user wants to open nhaccuatui
+  [preferences registerBool:&nhaccuatuiEnabled default:YES forKey:@"nhaccuatuiEnabled"];
+
+  // checks to see if the user wants to open zing mp3
+  [preferences registerBool:&zingEnabled default:YES forKey:@"zingEnabled"];
 
 }

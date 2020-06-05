@@ -10,14 +10,9 @@
 	return _specifiers;
 	}
 
-//Add respring method that we call with a PSButtonCell in our root.plist
--(void)respringMethod {
-	[HBRespringController respring];
-}
-
 //Adds a method to open the github link for the sourcecode
 - (void)openGithub {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/KodeyThomas/SpotifyBlue"]];
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/iTer99/SpotifyBlue"]];
 }
 
 @end
