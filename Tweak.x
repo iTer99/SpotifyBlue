@@ -34,11 +34,12 @@
 // and a bluetooth device is connected it opens spotify, this happens seemingly randomly.
 // also create some more booleans we need for our tweak settings
 BOOL runBefore = NO;
-BOOL isEnabled;
-BOOL spotifyEnabled;
-BOOL appleEnabled;
-BOOL nhaccuatuiEnabled;
-BOOL zingEnabled;
+BOOL isEnabled = NO;
+BOOL spotifyEnabled = NO;
+BOOL appleEnabled = NO;
+BOOL nhaccuatuiEnabled = NO;
+BOOL zingEnabled = NO;
+BOOL soundcloudEnabled = NO;
 
 // this hooks into the class BluetoothDevice from the BluetoothManager framework
 %hook BluetoothDevice
@@ -55,7 +56,7 @@ BOOL zingEnabled;
 
     if(isEnabled) {
 
-      if(spotifyEnabled) {
+        if(spotifyEnabled) {
 
         //opens spotify
         [[UIApplication sharedApplication] launchApplicationWithIdentifier:@"com.spotify.client" suspended:FALSE];
@@ -67,13 +68,26 @@ BOOL zingEnabled;
         return isDeviceConnected;
 
       }
-
-      if(appleEnabled) {
+      
+        if(appleEnabled) {
 
         //opens apple music
         [[UIApplication sharedApplication] launchApplicationWithIdentifier:@"com.apple.Music" suspended:FALSE];
 
         // say that we have run our modified code and too not open apple music again until runBefore is False
+        runBefore = YES;
+
+        // returns the value back to the method
+        return isDeviceConnected;
+
+      }
+      
+        if(soundcloudEnabled) {
+
+        //opens soundcloud
+        [[UIApplication sharedApplication] launchApplicationWithIdentifier:@"com.soundcloud.TouchApp" suspended:FALSE];
+
+        // say that we have run our modified code and too not open soundcloud again until runBefore is False
         runBefore = YES;
 
         // returns the value back to the method
@@ -93,7 +107,7 @@ BOOL zingEnabled;
         return isDeviceConnected;
 
       }
-
+      
         if(zingEnabled) {
 
         //opens zing mp3
@@ -132,13 +146,12 @@ BOOL zingEnabled;
 
 %end
 
-
 // gather user defined settings from the tweak settings
 // this section of code gets the values from our PreferenceBundle to check if the tweak is enabled and other settings.
 %ctor {
+
   //create HBPreferences instance
   HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.iter99.spotifyblueprefs"];
-
 
   //registers preference variables, naming the preference key and variable the same thing reduces confusion for me.
 
@@ -156,5 +169,8 @@ BOOL zingEnabled;
 
   // checks to see if the user wants to open zing mp3
   [preferences registerBool:&zingEnabled default:YES forKey:@"zingEnabled"];
+  
+  // checks to see if the user wants to open soundcloud
+  [preferences registerBool:&soundcloudEnabled default:YES forKey:@"soundcloudEnabled"];
 
 }
